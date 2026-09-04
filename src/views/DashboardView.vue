@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import MetricCard from '../components/MetricCard.vue'
+
 const metrics = [
-  { label: 'Shipment Volume', value: '—', trend: '—' },
-  { label: 'On-Time Delivery', value: '—', trend: '—' },
-  { label: 'Regions Tracked', value: '—', trend: '—' },
-  { label: 'Open Exceptions', value: '—', trend: '—' },
+  { label: 'Shipment Volume', value: '—', trend: '—', trendDirection: 'neutral' as const },
+  { label: 'On-Time Delivery', value: '—', trend: '—', trendDirection: 'neutral' as const },
+  { label: 'Regions Tracked', value: '—', trend: '—', trendDirection: 'neutral' as const },
+  { label: 'Open Exceptions', value: '—', trend: '—', trendDirection: 'neutral' as const },
 ]
 </script>
 
@@ -26,14 +28,14 @@ const metrics = [
     </header>
 
     <section class="metrics-grid">
-      <article class="card metric-card" v-for="metric in metrics" :key="metric.label">
-        <div class="card-header">
-          <span class="card-icon is-soft" aria-hidden="true"></span>
-          <span class="badge badge-accent">{{ metric.trend }}</span>
-        </div>
-        <p class="text-label">{{ metric.label }}</p>
-        <p class="display text-mono metric-value">{{ metric.value }}</p>
-      </article>
+      <MetricCard
+        v-for="metric in metrics"
+        :key="metric.label"
+        :label="metric.label"
+        :value="metric.value"
+        :trend="metric.trend"
+        :trend-direction="metric.trendDirection"
+      />
     </section>
 
     <section class="dashboard-panels">
@@ -84,11 +86,6 @@ const metrics = [
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: var(--space-lg);
-}
-
-.metric-value {
-  font-size: var(--text-h1);
-  line-height: var(--text-h1-lh);
 }
 
 .dashboard-panels {
