@@ -3,10 +3,10 @@
     "7d": {
       "label": "Last 7 days",
       "summary": {
-        "shipmentVolume": { "value": "1,842", "trend": "+4.1% vs prior week", "sentiment": "positive" },
-        "onTimeRate": { "value": "94.2%", "trend": "+0.8 pts vs prior week", "sentiment": "positive" },
+        "shipmentVolume": { "value": "1,842", "trend": "+4.1%", "sentiment": "positive" },
+        "onTimeRate": { "value": "94.2%", "trend": "+0.8 pts", "sentiment": "positive" },
         "regionsTracked": { "value": "6", "trend": "No change", "sentiment": "neutral" },
-        "openExceptions": { "value": "9", "trend": "-2 vs prior week", "sentiment": "positive" }
+        "openExceptions": { "value": "9", "trend": "-2", "sentiment": "positive" }
       },
       "regionalPerformance": [
         { "region": "Northeast", "shipments": 412, "onTimeRate": 96.1 },
@@ -26,10 +26,10 @@
     "30d": {
       "label": "Last 30 days",
       "summary": {
-        "shipmentVolume": { "value": "7,614", "trend": "+6.3% vs prior 30 days", "sentiment": "positive" },
-        "onTimeRate": { "value": "92.6%", "trend": "-1.1 pts vs prior 30 days", "sentiment": "negative" },
+        "shipmentVolume": { "value": "7,614", "trend": "+6.3%", "sentiment": "positive" },
+        "onTimeRate": { "value": "92.6%", "trend": "-1.1 pts", "sentiment": "negative" },
         "regionsTracked": { "value": "6", "trend": "No change", "sentiment": "neutral" },
-        "openExceptions": { "value": "23", "trend": "+5 vs prior 30 days", "sentiment": "negative" }
+        "openExceptions": { "value": "23", "trend": "+5", "sentiment": "negative" }
       },
       "regionalPerformance": [
         { "region": "Northeast", "shipments": 1704, "onTimeRate": 94.8 },
@@ -51,10 +51,10 @@
     "90d": {
       "label": "Last 90 days",
       "summary": {
-        "shipmentVolume": { "value": "21,940", "trend": "+11.2% vs prior 90 days", "sentiment": "positive" },
-        "onTimeRate": { "value": "93.4%", "trend": "+0.4 pts vs prior 90 days", "sentiment": "positive" },
+        "shipmentVolume": { "value": "21,940", "trend": "+11.2%", "sentiment": "positive" },
+        "onTimeRate": { "value": "93.4%", "trend": "+0.4 pts", "sentiment": "positive" },
         "regionsTracked": { "value": "6", "trend": "No change", "sentiment": "neutral" },
-        "openExceptions": { "value": "61", "trend": "-8 vs prior 90 days", "sentiment": "positive" }
+        "openExceptions": { "value": "61", "trend": "-8", "sentiment": "positive" }
       },
       "regionalPerformance": [
         { "region": "Northeast", "shipments": 4912, "onTimeRate": 95.0 },

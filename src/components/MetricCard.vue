@@ -32,6 +32,11 @@ withDefaults(
   line-height: var(--text-h1-lh);
 }
 
+.card-header .badge {
+  white-space: nowrap;
+  flex: none;
+}
+
 .badge.is-positive {
   color: var(--color-success);
   border-color: rgba(52, 199, 89, 0.28);
