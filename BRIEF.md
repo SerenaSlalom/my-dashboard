@@ -1,73 +1,107 @@
 # FastForward Logistics — Ops Dashboard
 
-## Summary
+## What is this?
 
-FastForward Logistics is a mid-size freight and supply chain company. Their operations
-team currently tracks performance across scattered spreadsheets. This project delivers
-a single internal dashboard that the VP of Operations can pull up in leadership meetings
-to see, at a glance, how the business is running.
+A single-page operations dashboard for FastForward Logistics, a mid-size freight
+and supply chain company. Think a logistics control-tower view — the kind of
+ops board a VP of Operations pulls up in a leadership meeting to see, at a
+glance, how shipping is performing. Audience is that VP and her leadership
+team, not drivers or dispatchers — this reads as an executive snapshot, not an
+admin tool.
 
-**Audience:** VP of Operations and her leadership team — not drivers or dispatchers.
-The dashboard should read as an executive-level operational snapshot: quick to scan,
-confident, no raw data-entry or admin tooling.
+## Data
 
-**Core data & metrics** the dashboard must surface:
+Generate a fake dataset as JSON (`src/data/metrics.json`). Cover a full year
+of daily records (Jan–Dec 2025), each day containing:
 
-- **Shipment volume** — total shipments over a selectable period
-- **On-time delivery rate** — percentage on-time, with a sense of trend
-- **Regional performance** — a breakdown/comparison across regions
-- **Open exceptions** — count and list of unresolved shipment issues needing attention
+- `shipmentVolume` — number of shipments, trending upward over the year with
+  weekly variation and a dip around major holidays
+- `onTimeRate` — percentage, fluctuates between 88–97%, dips slightly during
+  Q4 peak season
+- `exceptionsOpened` — number of new shipment issues that day, loosely
+  correlates with shipment volume, with occasional spikes
+- `exceptionsResolved` — number resolved that day, trails `exceptionsOpened`
+  by a few days
 
-Data source: a mock dataset (`src/data/metrics.json`) with realistic numbers (see Step 2.6).
+Also include:
 
-**Interactivity requirement:** at least one interactive element that actually changes
-what's displayed — a date-range filter or region selector, not a decorative control.
+- A **regional breakdown**: 6 regions (Northeast, Southeast, Midwest,
+  Southwest, West, Pacific Northwest), each with shipment count and on-time
+  rate, recomputed for whichever date range is selected
+- A running **list of open exceptions** (id, shipment id, region, issue,
+  status) — the incident feed underneath the trend charts
 
-## Design
+## Layout
 
-Design system: **Aether** — a frosted-glass design system inspired by Apple's light
-material language. Full token spec: [design/aether/DESIGN.md](design/aether/DESIGN.md).
-Source tokens/CSS: [design/aether/css/system.css](design/aether/css/system.css).
-Static previews: [design/aether/html/preview.html](design/aether/html/preview.html).
+- Header at the top with the dashboard title and a period picker (Aether
+  `.tabs`/dock control)
+- The period picker defaults to **All** (the full year). Selecting 7/30/90
+  days narrows to that trailing window.
+- Below the header: a row of 4 summary cards (Aether `.card` /
+  `MetricCard.vue`) showing shipment volume, on-time rate, regions tracked,
+  and open exceptions
+- Below the cards: a row of 2 charts
+  - Left: bar chart of shipment volume over time
+  - Right: line chart of on-time delivery rate over time
+- Below that: two panels side by side — **Regional Performance** (table) and
+  **Open Exceptions** (list) — both recompute for the selected range
+- Responsive grid: cards and charts stack to a single column on narrow
+  screens
 
-Key visual language to carry into the dashboard:
+## Interactions
 
-- Cool pearl page background (`#eef1f6`); translucent glass cards (24px radius,
-  `rounded.xl`) for metric tiles and panels
-- Charcoal (`#1d1d1f`) as the single anchor color for primary actions, active states,
-  and key numerals — no added chroma beyond system blue (`#0a84ff`) for focus/links
-- Pill geometry (`rounded.full`) for buttons, tabs, and the region/date filter control
-- Inter for all text; JetBrains Mono for numeric/tabular figures — good fit for
-  shipment counts and percentages
-- Lucide icons only, stroked at 1.75, `currentColor`
-- Every glass surface keeps its inset bevel + hairline border + soft shadow — don't
-  flatten cards to solid fills
+- The period picker filters **everything** — summary cards, both charts, the
+  regional table, and the exceptions list all recompute for the selected
+  range
+- When **All** is selected, cards show full-year totals/averages and charts
+  show all 12 months
+- Cards show a small colored trend badge (Aether `.badge`) reflecting whether
+  the change is *good or bad* for that metric, not just its raw sign — e.g.
+  fewer open exceptions is a positive/green badge even though the number went
+  down (see `MetricCard`'s `trendSentiment` prop)
 
-Layout: 1200px content frame, single-column stack on mobile, 12-column grid on desktop.
-Cards use 1.5rem interior padding; sections separate by 3–4.5rem of vertical space per
-the system's spacing scale.
+## Style
+
+- **Aether** design system throughout, no exceptions — pearl background,
+  frosted-glass cards, pill-shaped controls, charcoal + system-blue accent.
+  Full spec: [design/aether/DESIGN.md](design/aether/DESIGN.md)
+- Clean, minimal, generous whitespace per Aether's spacing scale
+- Charts use a cohesive palette pulled from Aether's tokens (charcoal, system
+  blue, aurora tints) — not the charting library's rainbow defaults
+- Mobile responsive — cards and charts stack on small screens
+
+## Tech
+
+- Vue 3 + TypeScript
+- **Aether** — a plain-CSS design system (not a component library like
+  Vuetify); its classes and tokens are imported globally and used directly
+- Chart.js via `vue-chartjs` for the two trend charts
+- Fake data from a local JSON file (`src/data/metrics.json`) — no API calls
+- Vue Router is present for future routes, but this is a single page — no
+  navigation needed today
 
 ## What "done" looks like (grading requirements)
 
-This build is graded across three areas (Capstone rubric, P200 tier). The brief and
-the build must satisfy all of them:
+This build is graded across three areas (Capstone rubric, P200 tier). The
+brief and the build must satisfy all of them:
 
-1. **Does it work** — site live and accessible (password-protect it), core flows work
-   end to end, the dashboard reflects this brief (shipment volume, on-time rate,
-   regional performance, open exceptions), and at least one interactive element
-   genuinely functions.
-2. **Is the repo set up right** — this BRIEF.md is present and reads as a plan, not a
-   description written after the fact; AI scaffolding (this file, CLAUDE.md, the
-   `design/aether` docs) is organized in a logical place, not scattered; folder
-   structure makes sense to an outside reviewer; commit history shows real,
-   incremental progress with descriptive messages — not one big push at the end.
-3. **Does it look right and show your thinking** — the dashboard feels like a real
-   internal ops tool built for FastForward Logistics specifically, not a generic
-   template; a first-time visitor in that VP's role could orient themselves without
-   help; design decisions (hierarchy, spacing, data presentation) are intentional and
-   traceable back to this brief.
+1. **Does it work** — site live and accessible (password-protect it), core
+   flows work end to end, the dashboard reflects this brief (shipment volume,
+   on-time rate, regional performance, open exceptions), and at least one
+   interactive element genuinely functions.
+2. **Is the repo set up right** — this BRIEF.md is present and reads as a
+   plan, not a description written after the fact; AI scaffolding (this
+   file, CLAUDE.md, the `design/aether` docs) is organized in a logical
+   place, not scattered; folder structure makes sense to an outside
+   reviewer; commit history shows real, incremental progress with
+   descriptive messages — not one big push at the end.
+3. **Does it look right and show your thinking** — the dashboard feels like
+   a real internal ops tool built for FastForward Logistics specifically,
+   not a generic template; a first-time visitor in that VP's role could
+   orient themselves without help; design decisions (hierarchy, spacing,
+   data presentation) are intentional and traceable back to this brief.
 
 ## Out of scope
 
-No additional nice-to-haves beyond the above — keep the build focused on meeting the
-grading requirements cleanly rather than adding extra features.
+No real API integration, no authentication, no multi-page navigation. The
+dataset is static mock JSON, regenerated by hand — not fetched or persisted.
