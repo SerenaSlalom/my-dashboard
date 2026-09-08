@@ -34,16 +34,76 @@ const periodOptions: { key: PeriodKey; label: string }[] = [
   { key: '90d', label: '90 days' },
 ]
 
+const MONTH_OPTIONS = [
+  { key: '2025-01', label: 'January' },
+  { key: '2025-02', label: 'February' },
+  { key: '2025-03', label: 'March' },
+  { key: '2025-04', label: 'April' },
+  { key: '2025-05', label: 'May' },
+  { key: '2025-06', label: 'June' },
+  { key: '2025-07', label: 'July' },
+  { key: '2025-08', label: 'August' },
+  { key: '2025-09', label: 'September' },
+  { key: '2025-10', label: 'October' },
+  { key: '2025-11', label: 'November' },
+  { key: '2025-12', label: 'December' },
+]
+
 const selectedPeriod = ref<PeriodKey>('all')
+// A specific month takes precedence over the 7/30/90/All tabs when set —
+// they're two ways of picking a range, not two ranges to intersect.
+const selectedMonth = ref<string | null>(null)
 
-const currentDays = computed(() => sliceDays(days, selectedPeriod.value))
-const previousDays = computed(() => previousSliceDays(days, selectedPeriod.value))
+const monthSelectModel = computed({
+  get: () => selectedMonth.value ?? '',
+  set: (value: string) => {
+    selectedMonth.value = value === '' ? null : value
+  },
+})
 
-const periodLabel = computed(() =>
-  selectedPeriod.value === 'all' ? 'All of 2025' : `Last ${currentDays.value.length} days`,
-)
+function selectPeriod(period: PeriodKey) {
+  selectedPeriod.value = period
+  selectedMonth.value = null
+}
 
-const chartBuckets = computed(() => bucketDays(currentDays.value, granularityForPeriod(selectedPeriod.value)))
+// Resolves whichever filter is active (month dropdown wins if set) into the
+// days to show, the prior equal-length window for trend comparison, a
+// display label, and the chart bucketing granularity to use.
+const activeRange = computed(() => {
+  if (selectedMonth.value) {
+    const monthIndex = MONTH_OPTIONS.findIndex((m) => m.key === selectedMonth.value)
+    const monthDays = days.filter((d) => d.date.slice(0, 7) === selectedMonth.value)
+    const previousMonthKey = monthIndex > 0 ? MONTH_OPTIONS[monthIndex - 1].key : null
+    const previousMonthDays = previousMonthKey
+      ? days.filter((d) => d.date.slice(0, 7) === previousMonthKey)
+      : []
+
+    return {
+      current: monthDays,
+      previous: previousMonthDays,
+      label: `${MONTH_OPTIONS[monthIndex].label} 2025`,
+      granularity: 'day' as const,
+      hasTrend: previousMonthKey !== null,
+    }
+  }
+
+  return {
+    current: sliceDays(days, selectedPeriod.value),
+    previous: previousSliceDays(days, selectedPeriod.value),
+    label:
+      selectedPeriod.value === 'all'
+        ? 'All of 2025'
+        : `Last ${sliceDays(days, selectedPeriod.value).length} days`,
+    granularity: granularityForPeriod(selectedPeriod.value),
+    hasTrend: selectedPeriod.value !== 'all',
+  }
+})
+
+const currentDays = computed(() => activeRange.value.current)
+const previousDays = computed(() => activeRange.value.previous)
+const periodLabel = computed(() => activeRange.value.label)
+
+const chartBuckets = computed(() => bucketDays(currentDays.value, activeRange.value.granularity))
 const chartLabels = computed(() => chartBuckets.value.map((b) => b.label))
 const volumeSeries = computed(() => chartBuckets.value.map((b) => b.volume))
 const onTimeSeries = computed(() => chartBuckets.value.map((b) => Math.round(b.onTimeRate * 10) / 10))
@@ -79,13 +139,17 @@ const openedInCurrentWindow = computed(() => exceptionsReportedIn(currentDays.va
 const openedInPreviousWindow = computed(() => exceptionsReportedIn(previousDays.value))
 
 const metrics = computed(() => {
-  const isAll = selectedPeriod.value === 'all'
+  const hasTrend = activeRange.value.hasTrend
 
-  const volumeTrend = isAll ? undefined : formatTrend(currentVolume.value, previousVolume.value, 'percent', 'up')
-  const onTimeTrend = isAll ? undefined : formatTrend(currentOnTime.value, previousOnTime.value, 'points', 'up')
-  const exceptionsTrend = isAll
-    ? undefined
-    : formatTrend(openedInCurrentWindow.value, openedInPreviousWindow.value, 'count', 'down')
+  const volumeTrend = hasTrend
+    ? formatTrend(currentVolume.value, previousVolume.value, 'percent', 'up')
+    : undefined
+  const onTimeTrend = hasTrend
+    ? formatTrend(currentOnTime.value, previousOnTime.value, 'points', 'up')
+    : undefined
+  const exceptionsTrend = hasTrend
+    ? formatTrend(openedInCurrentWindow.value, openedInPreviousWindow.value, 'count', 'down')
+    : undefined
 
   return [
     {
@@ -150,14 +214,23 @@ const visibleExceptions = computed(() => {
             v-for="option in periodOptions"
             :key="option.key"
             class="tab"
-            :class="{ 'is-active': selectedPeriod === option.key }"
+            :class="{ 'is-active': selectedMonth === null && selectedPeriod === option.key }"
             role="tab"
-            :aria-selected="selectedPeriod === option.key"
+            :aria-selected="selectedMonth === null && selectedPeriod === option.key"
             type="button"
-            @click="selectedPeriod = option.key"
+            @click="selectPeriod(option.key)"
           >
             {{ option.label }}
           </button>
+        </div>
+
+        <div class="btn btn-secondary month-filter">
+          <select v-model="monthSelectModel" class="month-filter-select" aria-label="Filter by month">
+            <option value="">All months</option>
+            <option v-for="month in MONTH_OPTIONS" :key="month.key" :value="month.key">
+              {{ month.label }}
+            </option>
+          </select>
         </div>
       </div>
     </header>
@@ -265,6 +338,23 @@ const visibleExceptions = computed(() => {
 
 .dashboard-actions {
   gap: var(--space-md);
+}
+
+.month-filter {
+  padding: 0 var(--space-md);
+}
+
+.month-filter-select {
+  appearance: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  height: 100%;
+  font-family: inherit;
+  font-size: var(--text-body);
+  color: var(--color-ink);
+  cursor: pointer;
 }
 
 .metrics-grid {
