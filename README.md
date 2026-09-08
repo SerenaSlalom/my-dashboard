@@ -12,6 +12,7 @@ requirements. Visual design follows the **Aether** design system in
 - Vue 3 + TypeScript
 - Vite
 - Vue Router
+- Chart.js (via vue-chartjs)
 
 ## Development
 
