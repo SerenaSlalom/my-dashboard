@@ -156,6 +156,7 @@ const metrics = computed(() => {
       key: 'shipmentVolume',
       label: 'Shipment Volume',
       value: Math.round(currentVolume.value).toLocaleString(),
+      icon: 'package' as const,
       trend: volumeTrend?.text,
       sentiment: volumeTrend?.sentiment ?? 'neutral',
     },
@@ -163,6 +164,7 @@ const metrics = computed(() => {
       key: 'onTimeRate',
       label: 'On-Time Delivery',
       value: `${currentOnTime.value.toFixed(1)}%`,
+      icon: 'clock' as const,
       trend: onTimeTrend?.text,
       sentiment: onTimeTrend?.sentiment ?? 'neutral',
     },
@@ -170,6 +172,7 @@ const metrics = computed(() => {
       key: 'regionsTracked',
       label: 'Regions Tracked',
       value: '6',
+      icon: 'map-pin' as const,
       trend: 'No change',
       sentiment: 'neutral' as const,
     },
@@ -177,6 +180,7 @@ const metrics = computed(() => {
       key: 'openExceptions',
       label: 'Open Exceptions',
       value: `${openExceptionsCount.value}`,
+      icon: 'triangle-alert' as const,
       trend: exceptionsTrend?.text,
       sentiment: exceptionsTrend?.sentiment ?? 'neutral',
     },
@@ -253,6 +257,7 @@ const visibleExceptions = computed(() => {
         :key="metric.key"
         :label="metric.label"
         :value="metric.value"
+        :icon="metric.icon"
         :trend="metric.trend"
         :trend-sentiment="metric.sentiment"
       />
