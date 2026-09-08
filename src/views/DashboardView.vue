@@ -69,7 +69,7 @@ const metrics = computed(() => {
           <h2 class="card-title">Regional Performance</h2>
           <span class="text-label">{{ currentPeriod.label }}</span>
         </div>
-        <table class="regional-table">
+        <table v-if="currentPeriod.regionalPerformance.length" class="regional-table">
           <thead>
             <tr>
               <th class="text-label">Region</th>
@@ -85,13 +85,14 @@ const metrics = computed(() => {
             </tr>
           </tbody>
         </table>
+        <p v-else class="text-body empty-state">No regional data for this period.</p>
       </div>
 
       <div class="card card-raised panel-exceptions">
         <div class="card-header">
           <h2 class="card-title">Open Exceptions</h2>
         </div>
-        <ul class="exceptions-list">
+        <ul v-if="currentPeriod.exceptions.length" class="exceptions-list">
           <li v-for="exception in currentPeriod.exceptions" :key="exception.id" class="exception-item">
             <div class="exception-row">
               <span class="text-mono text-label">{{ exception.id }}</span>
@@ -103,6 +104,7 @@ const metrics = computed(() => {
             <p class="text-micro">{{ exception.region }} · {{ exception.shipmentId }}</p>
           </li>
         </ul>
+        <p v-else class="text-body empty-state">No open exceptions for this period — clean run.</p>
       </div>
     </section>
   </div>
@@ -212,5 +214,10 @@ const metrics = computed(() => {
 
 .badge.is-neutral {
   color: var(--color-ink-secondary);
+}
+
+.empty-state {
+  color: var(--color-ink-tertiary);
+  margin: 0;
 }
 </style>
