@@ -1,0 +1,79 @@
+{
+  "periods": {
+    "7d": {
+      "label": "Last 7 days",
+      "summary": {
+        "shipmentVolume": { "value": "1,842", "trend": "+4.1% vs prior week", "sentiment": "positive" },
+        "onTimeRate": { "value": "94.2%", "trend": "+0.8 pts vs prior week", "sentiment": "positive" },
+        "regionsTracked": { "value": "6", "trend": "No change", "sentiment": "neutral" },
+        "openExceptions": { "value": "9", "trend": "-2 vs prior week", "sentiment": "positive" }
+      },
+      "regionalPerformance": [
+        { "region": "Northeast", "shipments": 412, "onTimeRate": 96.1 },
+        { "region": "Southeast", "shipments": 388, "onTimeRate": 93.4 },
+        { "region": "Midwest", "shipments": 356, "onTimeRate": 91.7 },
+        { "region": "Southwest", "shipments": 274, "onTimeRate": 95.3 },
+        { "region": "West", "shipments": 241, "onTimeRate": 92.0 },
+        { "region": "Pacific Northwest", "shipments": 171, "onTimeRate": 97.2 }
+      ],
+      "exceptions": [
+        { "id": "EXC-2214", "shipmentId": "SHP-88231", "region": "Midwest", "issue": "Delayed at customs", "status": "Investigating" },
+        { "id": "EXC-2211", "shipmentId": "SHP-88190", "region": "Southeast", "issue": "Carrier delay — weather", "status": "Open" },
+        { "id": "EXC-2208", "shipmentId": "SHP-88142", "region": "West", "issue": "Damaged freight reported", "status": "Open" },
+        { "id": "EXC-2203", "shipmentId": "SHP-88099", "region": "Northeast", "issue": "Missed dock appointment", "status": "Investigating" }
+      ]
+    },
+    "30d": {
+      "label": "Last 30 days",
+      "summary": {
+        "shipmentVolume": { "value": "7,614", "trend": "+6.3% vs prior 30 days", "sentiment": "positive" },
+        "onTimeRate": { "value": "92.6%", "trend": "-1.1 pts vs prior 30 days", "sentiment": "negative" },
+        "regionsTracked": { "value": "6", "trend": "No change", "sentiment": "neutral" },
+        "openExceptions": { "value": "23", "trend": "+5 vs prior 30 days", "sentiment": "negative" }
+      },
+      "regionalPerformance": [
+        { "region": "Northeast", "shipments": 1704, "onTimeRate": 94.8 },
+        { "region": "Southeast", "shipments": 1598, "onTimeRate": 90.2 },
+        { "region": "Midwest", "shipments": 1472, "onTimeRate": 89.6 },
+        { "region": "Southwest", "shipments": 1136, "onTimeRate": 93.9 },
+        { "region": "West", "shipments": 987, "onTimeRate": 91.4 },
+        { "region": "Pacific Northwest", "shipments": 717, "onTimeRate": 95.7 }
+      ],
+      "exceptions": [
+        { "id": "EXC-2214", "shipmentId": "SHP-88231", "region": "Midwest", "issue": "Delayed at customs", "status": "Investigating" },
+        { "id": "EXC-2211", "shipmentId": "SHP-88190", "region": "Southeast", "issue": "Carrier delay — weather", "status": "Open" },
+        { "id": "EXC-2208", "shipmentId": "SHP-88142", "region": "West", "issue": "Damaged freight reported", "status": "Open" },
+        { "id": "EXC-2203", "shipmentId": "SHP-88099", "region": "Northeast", "issue": "Missed dock appointment", "status": "Investigating" },
+        { "id": "EXC-2187", "shipmentId": "SHP-87944", "region": "Southwest", "issue": "Incorrect manifest", "status": "Resolved" },
+        { "id": "EXC-2165", "shipmentId": "SHP-87801", "region": "Midwest", "issue": "Route rerouted — closure", "status": "Open" }
+      ]
+    },
+    "90d": {
+      "label": "Last 90 days",
+      "summary": {
+        "shipmentVolume": { "value": "21,940", "trend": "+11.2% vs prior 90 days", "sentiment": "positive" },
+        "onTimeRate": { "value": "93.4%", "trend": "+0.4 pts vs prior 90 days", "sentiment": "positive" },
+        "regionsTracked": { "value": "6", "trend": "No change", "sentiment": "neutral" },
+        "openExceptions": { "value": "61", "trend": "-8 vs prior 90 days", "sentiment": "positive" }
+      },
+      "regionalPerformance": [
+        { "region": "Northeast", "shipments": 4912, "onTimeRate": 95.0 },
+        { "region": "Southeast", "shipments": 4587, "onTimeRate": 91.8 },
+        { "region": "Midwest", "shipments": 4203, "onTimeRate": 90.5 },
+        { "region": "Southwest", "shipments": 3298, "onTimeRate": 94.6 },
+        { "region": "West", "shipments": 2841, "onTimeRate": 92.7 },
+        { "region": "Pacific Northwest", "shipments": 2099, "onTimeRate": 96.4 }
+      ],
+      "exceptions": [
+        { "id": "EXC-2214", "shipmentId": "SHP-88231", "region": "Midwest", "issue": "Delayed at customs", "status": "Investigating" },
+        { "id": "EXC-2211", "shipmentId": "SHP-88190", "region": "Southeast", "issue": "Carrier delay — weather", "status": "Open" },
+        { "id": "EXC-2208", "shipmentId": "SHP-88142", "region": "West", "issue": "Damaged freight reported", "status": "Open" },
+        { "id": "EXC-2203", "shipmentId": "SHP-88099", "region": "Northeast", "issue": "Missed dock appointment", "status": "Investigating" },
+        { "id": "EXC-2187", "shipmentId": "SHP-87944", "region": "Southwest", "issue": "Incorrect manifest", "status": "Resolved" },
+        { "id": "EXC-2165", "shipmentId": "SHP-87801", "region": "Midwest", "issue": "Route rerouted — closure", "status": "Open" },
+        { "id": "EXC-2098", "shipmentId": "SHP-87422", "region": "Pacific Northwest", "issue": "Port congestion delay", "status": "Resolved" },
+        { "id": "EXC-2044", "shipmentId": "SHP-87109", "region": "Southeast", "issue": "Temperature excursion", "status": "Resolved" }
+      ]
+    }
+  }
+}

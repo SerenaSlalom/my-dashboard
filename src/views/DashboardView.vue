@@ -1,12 +1,29 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
 import MetricCard from '../components/MetricCard.vue'
+import metricsData from '../data/metrics.json'
 
-const metrics = [
-  { label: 'Shipment Volume', value: '—', trend: '—', trendDirection: 'neutral' as const },
-  { label: 'On-Time Delivery', value: '—', trend: '—', trendDirection: 'neutral' as const },
-  { label: 'Regions Tracked', value: '—', trend: '—', trendDirection: 'neutral' as const },
-  { label: 'Open Exceptions', value: '—', trend: '—', trendDirection: 'neutral' as const },
+type PeriodKey = keyof typeof metricsData.periods
+
+const periodOptions: { key: PeriodKey; label: string }[] = [
+  { key: '7d', label: '7 days' },
+  { key: '30d', label: '30 days' },
+  { key: '90d', label: '90 days' },
 ]
+
+const selectedPeriod = ref<PeriodKey>('30d')
+
+const currentPeriod = computed(() => metricsData.periods[selectedPeriod.value])
+
+const metrics = computed(() => {
+  const summary = currentPeriod.value.summary
+  return [
+    { key: 'shipmentVolume', label: 'Shipment Volume', ...summary.shipmentVolume },
+    { key: 'onTimeRate', label: 'On-Time Delivery', ...summary.onTimeRate },
+    { key: 'regionsTracked', label: 'Regions Tracked', ...summary.regionsTracked },
+    { key: 'openExceptions', label: 'Open Exceptions', ...summary.openExceptions },
+  ]
+})
 </script>
 
 <template>
@@ -18,23 +35,31 @@ const metrics = [
       </div>
 
       <div class="dashboard-actions row-wrap">
-        <div class="tabs" role="tablist">
-          <button class="tab is-active" role="tab" aria-selected="true">Overview</button>
-          <button class="tab" role="tab" aria-selected="false">Regions</button>
-          <button class="tab" role="tab" aria-selected="false">Exceptions</button>
+        <div class="tabs" role="tablist" aria-label="Select time period">
+          <button
+            v-for="option in periodOptions"
+            :key="option.key"
+            class="tab"
+            :class="{ 'is-active': selectedPeriod === option.key }"
+            role="tab"
+            :aria-selected="selectedPeriod === option.key"
+            type="button"
+            @click="selectedPeriod = option.key"
+          >
+            {{ option.label }}
+          </button>
         </div>
-        <button class="btn btn-secondary" type="button">Last 30 days</button>
       </div>
     </header>
 
     <section class="metrics-grid">
       <MetricCard
         v-for="metric in metrics"
-        :key="metric.label"
+        :key="metric.key"
         :label="metric.label"
         :value="metric.value"
         :trend="metric.trend"
-        :trend-direction="metric.trendDirection"
+        :trend-sentiment="metric.sentiment as 'positive' | 'negative' | 'neutral'"
       />
     </section>
 
@@ -42,15 +67,42 @@ const metrics = [
       <div class="card card-raised panel-regional">
         <div class="card-header">
           <h2 class="card-title">Regional Performance</h2>
+          <span class="text-label">{{ currentPeriod.label }}</span>
         </div>
-        <div class="card-body">Regional breakdown placeholder — mock data coming in Step 2.6.</div>
+        <table class="regional-table">
+          <thead>
+            <tr>
+              <th class="text-label">Region</th>
+              <th class="text-label">Shipments</th>
+              <th class="text-label">On-Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="region in currentPeriod.regionalPerformance" :key="region.region">
+              <td>{{ region.region }}</td>
+              <td class="text-mono">{{ region.shipments.toLocaleString() }}</td>
+              <td class="text-mono">{{ region.onTimeRate.toFixed(1) }}%</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <div class="card card-raised panel-exceptions">
         <div class="card-header">
           <h2 class="card-title">Open Exceptions</h2>
         </div>
-        <div class="card-body">Exceptions list placeholder — mock data coming in Step 2.6.</div>
+        <ul class="exceptions-list">
+          <li v-for="exception in currentPeriod.exceptions" :key="exception.id" class="exception-item">
+            <div class="exception-row">
+              <span class="text-mono text-label">{{ exception.id }}</span>
+              <span class="badge" :class="exception.status === 'Resolved' ? 'is-positive' : 'is-neutral'">
+                {{ exception.status }}
+              </span>
+            </div>
+            <p class="text-body exception-issue">{{ exception.issue }}</p>
+            <p class="text-micro">{{ exception.region }} · {{ exception.shipmentId }}</p>
+          </li>
+        </ul>
       </div>
     </section>
   </div>
@@ -92,11 +144,73 @@ const metrics = [
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: var(--space-lg);
+  align-items: start;
 }
 
 @media (max-width: 860px) {
   .dashboard-panels {
     grid-template-columns: 1fr;
   }
+}
+
+.regional-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.regional-table th {
+  text-align: left;
+  padding: var(--space-2xs) var(--space-xs);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.regional-table td {
+  padding: var(--space-xs);
+  border-bottom: 1px solid var(--color-hairline);
+  color: var(--color-ink);
+}
+
+.regional-table tr:last-child td {
+  border-bottom: none;
+}
+
+.exceptions-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.exception-item {
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.exception-item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.exception-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.exception-issue {
+  margin: var(--space-2xs) 0;
+}
+
+.badge.is-positive {
+  color: var(--color-success);
+  border-color: rgba(52, 199, 89, 0.28);
+  background: rgba(52, 199, 89, 0.12);
+}
+
+.badge.is-neutral {
+  color: var(--color-ink-secondary);
 }
 </style>
