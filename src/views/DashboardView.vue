@@ -231,6 +231,18 @@ const visibleExceptions = computed(() => {
               {{ month.label }}
             </option>
           </select>
+          <svg
+            class="month-filter-chevron"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="m6 9 6 6 6-6" />
+          </svg>
         </div>
       </div>
     </header>
@@ -341,7 +353,8 @@ const visibleExceptions = computed(() => {
 }
 
 .month-filter {
-  padding: 0 var(--space-md);
+  position: relative;
+  padding: 0 var(--space-xl) 0 var(--space-md);
 }
 
 .month-filter-select {
@@ -355,6 +368,17 @@ const visibleExceptions = computed(() => {
   font-size: var(--text-body);
   color: var(--color-ink);
   cursor: pointer;
+}
+
+.month-filter-chevron {
+  position: absolute;
+  right: var(--space-sm);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--color-ink-tertiary);
+  pointer-events: none;
 }
 
 .metrics-grid {
