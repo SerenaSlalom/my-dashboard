@@ -210,7 +210,6 @@ const visibleExceptions = computed(() => {
     <header class="dashboard-header">
       <div class="dashboard-titles">
         <img :src="fastForwardLogo" alt="FastForward Logistics" class="brand-logo" />
-        <h1 class="h1">Operations Dashboard</h1>
       </div>
 
       <div class="dashboard-actions row-wrap">
@@ -355,11 +354,6 @@ const visibleExceptions = computed(() => {
   width: 299px;
   height: auto;
   display: block;
-}
-
-.dashboard-titles .h1 {
-  font-size: calc(var(--text-h1) / 2);
-  margin-top: var(--space-sm);
 }
 
 .dashboard-actions {
