@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import MetricCard from '../components/MetricCard.vue'
 import ShipmentsChart from '../components/ShipmentsChart.vue'
 import OnTimeChart from '../components/OnTimeChart.vue'
+import fastForwardLogo from '../assets/fastforward-logo.svg'
 import metricsData from '../data/metrics.json'
 import {
   sliceDays,
@@ -208,7 +209,7 @@ const visibleExceptions = computed(() => {
   <div class="dashboard">
     <header class="dashboard-header">
       <div class="dashboard-titles">
-        <p class="text-micro">FastForward Logistics</p>
+        <img :src="fastForwardLogo" alt="FastForward Logistics" class="brand-logo" />
         <h1 class="h1">Operations Dashboard</h1>
       </div>
 
@@ -349,8 +350,16 @@ const visibleExceptions = computed(() => {
   gap: var(--space-lg);
 }
 
+.brand-logo {
+  /* Matches the rendered width of the period toggle (.tabs) for balance. */
+  width: 299px;
+  height: auto;
+  display: block;
+}
+
 .dashboard-titles .h1 {
-  margin-top: var(--space-2xs);
+  font-size: calc(var(--text-h1) / 2);
+  margin-top: var(--space-sm);
 }
 
 .dashboard-actions {
